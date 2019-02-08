@@ -8,7 +8,7 @@ Ticker | CLG
 Block time | 1 minute
 Maximum supply | 12,000,000 (12 million) CLG
 Consensus mechanism | Proof-of-Stake
-Algorithm | x16r-hash
+Algorithm | Quark
 Collateral | 2,000 CLG
 Features | SwiftTX, budget, treausury and masternode governance is enabled
 P2P Port | 12034
