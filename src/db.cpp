@@ -164,7 +164,7 @@ bool CDBEnv::Collegicoin(std::string strFile, bool fAggressive, std::vector<CDBE
     LOCK(cs_db);
     assert(mapFileUseCount.count(strFile) == 0);
 
-    u_int32_t flags = DB_COLLEGICOIN;
+    u_int32_t flags = DB_SALVAGE;
     if (fAggressive)
         flags |= DB_AGGRESSIVE;
 
