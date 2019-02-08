@@ -29,17 +29,16 @@ struct SeedSpec6 {
 
 /*
 ---------------
-algorithm: x16r
+algorithm: quark
 pzTimestamp: 20190208 CollegiCoin by ZioFabry
 pubkey: 04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f
 bits: 504365040
-time: 1549580953
+time: 1549621269
 merkle root hash: 4c313fe4670bce96eacac6676ef6a674a1249b236efec6b469d118c971c3b1c1
 Searching for genesis hash...
-nonce: 1734805
-genesis hash: 000008d58116c81fc01c28d5d741c1de9553ae90f35c6bf141b149946502b417
+nonce: 3177145
+genesis hash: 000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac
 */
-
 
 /**
  * Main network
@@ -69,30 +68,30 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 // + Contains no strange transactions
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
-    (0, uint256("0x000008d58116c81fc01c28d5d741c1de9553ae90f35c6bf141b149946502b417"));
+    (0, uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
 
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1549580953, // * UNIX timestamp of last checkpoint block
+    1549621269, // * UNIX timestamp of last checkpoint block
     0,          // * total number of transactions between genesis and last checkpoint (the tx=... number in the SetBestChain debug.log lines)
     1440        // * estimated number of transactions per day after checkpoint
 };
 
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
-    boost::assign::map_list_of(0, uint256("0x000008d58116c81fc01c28d5d741c1de9553ae90f35c6bf141b149946502b417"));
+    boost::assign::map_list_of(0, uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
 
 static const Checkpoints::CCheckpointData dataTestnet = {
     &mapCheckpointsTestnet,
-    1549580953, // * UNIX timestamp of last checkpoint block
+    1549621269, // * UNIX timestamp of last checkpoint block
     0,          // * total number of transactions between genesis and last checkpoint (the tx=... number in the SetBestChain debug.log lines)
     1440        // * estimated number of transactions per day after checkpoint
 };
 
 static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
-    boost::assign::map_list_of(0, uint256("0x000008d58116c81fc01c28d5d741c1de9553ae90f35c6bf141b149946502b417"));
+    boost::assign::map_list_of(0, uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
 static const Checkpoints::CCheckpointData dataRegtest = {
     &mapCheckpointsRegtest,
-    1549580953, // * UNIX timestamp of last checkpoint block
+    1549621269, // * UNIX timestamp of last checkpoint block
     0,          // * total number of transactions between genesis and last checkpoint (the tx=... number in the SetBestChain debug.log lines)
     1440        // * estimated number of transactions per day after checkpoint
 };
@@ -150,12 +149,12 @@ public:
         genesis.hashPrevBlock          = 0;
         genesis.hashMerkleRoot         = genesis.BuildMerkleTree();
         genesis.nVersion               = 1;
-        genesis.nTime                  = 1549580953;
+        genesis.nTime                  = 1549621269;
         genesis.nBits                  = 504365040;
-        genesis.nNonce                 = 1734805;
+        genesis.nNonce                 = 3177145;
 
         hashGenesisBlock               = genesis.GetHash();
-        assert(hashGenesisBlock        == uint256("0x000008d58116c81fc01c28d5d741c1de9553ae90f35c6bf141b149946502b417"));
+        assert(hashGenesisBlock        == uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
         assert(genesis.hashMerkleRoot  == uint256("0x4c313fe4670bce96eacac6676ef6a674a1249b236efec6b469d118c971c3b1c1"));
  
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,  28);  // Start with 'C' from https://en.bitcoin.it/wiki/List_of_address_prefixes
@@ -247,7 +246,7 @@ public:
         genesis.nNonce                 = 1734805;
 
         hashGenesisBlock               = genesis.GetHash();
-        assert(hashGenesisBlock        == uint256("0x000008d58116c81fc01c28d5d741c1de9553ae90f35c6bf141b149946502b417"));
+        assert(hashGenesisBlock        == uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
         assert(genesis.hashMerkleRoot  == uint256("0x4c313fe4670bce96eacac6676ef6a674a1249b236efec6b469d118c971c3b1c1"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,  87);  // Start with 'c' from https://en.bitcoin.it/wiki/List_of_address_prefixes
