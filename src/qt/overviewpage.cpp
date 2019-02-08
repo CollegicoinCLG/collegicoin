@@ -343,11 +343,11 @@ void OverviewPage::SetLinks()
     ui->labelLinks6->setText("");
     ui->labelLinks7->setText("");
 
-    ui->labelLinksUrl1->setText("<a href=\"https://collegicoinproject.org\">https://collegicoinproject.org</a>");
-    ui->labelLinksUrl2->setText("<a href=\"https://collegicoinproject.org/whitepaper\">https://collegicoinproject.org/whitepaper</a>");
-    ui->labelLinksUrl3->setText("<a href=\"http://explorer.collegicoinproject.org:3001\">http://explorer.collegicoinproject.org:3001</a>");
-    ui->labelLinksUrl4->setText("<a href=\"https://discord.gg/KAbBer2\">https://discord.gg/KAbBer2</a>");
-    ui->labelLinksUrl5->setText("<a href=\"https://github.com/CollegicoinCLG/collegicoin\">https://github.com/CollegicoinCLG/collegicoin</a>");
-    ui->labelLinksUrl6->setText("");
+    ui->labelLinksUrl1->setText("<a href=\"https://www.collegicoin.com/\">https://www.collegicoin.com/</a>");
+    ui->labelLinksUrl2->setText("<a href=\"https://www.collegicoin.com/whitepaper\">https://www.collegicoin.com/whitepaper</a>");
+    ui->labelLinksUrl3->setText("<a href=\"http://explorer.collegicoin.com/\">http://explorer.collegicoin.com/</a>");
+    ui->labelLinksUrl4->setText("<a href=\"https://discord.gg/r34XbnA\">https://discord.gg/r34XbnA</a>");
+    ui->labelLinksUrl5->setText("<a href=\"https://twitter.com/collegicoin\">https://twitter.com/collegicoin</a>");
+    ui->labelLinksUrl6->setText("<a href=\"https://github.com/CollegicoinCLG/collegicoin\">https://github.com/CollegicoinCLG/collegicoin</a>");
     ui->labelLinksUrl7->setText("");
 }
