@@ -3,6 +3,7 @@
 ### Coin Specs
 
 Coin Name | Collegicoin
+:--- | :---
 Ticker | CLG
 Block time | 1 minute
 Maximum supply | 12,000,000 (12 million) CLG
