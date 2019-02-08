@@ -16,7 +16,6 @@ RPC Port | 12035
 
 ### Reward Schema
 
-Block | Block | Block | % | % | %
 From | To | Rewards | Masternode | Staker | Treasury
 ---: | ---: | ---: | ---: | ---: | ---:
 1 | 1 | 2.500.000 | 0% | 0% | 0%
