@@ -1,0 +1,26 @@
+# /etc/conf.d/collegicoind: config file for /etc/init.d/collegicoind
+
+# Config file location
+#BITCOIND_CONFIGFILE="/etc/collegicoin/collegicoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
+#BITCOIND_PIDDIR="/var/run/collegicoind"
+
+# What filename to give the pidfile
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/collegicoind.pid"
+
+# Where to write collegicoind data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/collegicoind"
+
+# User and group to own collegicoind process
+#BITCOIND_USER="collegicoin"
+#BITCOIND_GROUP="collegicoin"
+
+# Path to collegicoind executable
+#BITCOIND_BIN="/usr/bin/collegicoind"
+
+# Nice value to run collegicoind under
+#BITCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+BITCOIND_OPTS=""

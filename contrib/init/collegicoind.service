@@ -1,0 +1,26 @@
+[Unit]
+Description=Collegicoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=collegicoin
+Group=collegicoin
+
+Type=forking
+PIDFile=/var/lib/collegicoind/collegicoind.pid
+
+ExecStart=/usr/bin/collegicoind -daemon -pid=/var/lib/collegicoind/collegicoind.pid \
+          -conf=/etc/collegicoin/collegicoin.conf -datadir=/var/lib/collegicoind
+
+ExecStop=-/usr/bin/collegicoin-cli -conf=/etc/collegicoin/collegicoin.conf \
+         -datadir=/var/lib/collegicoind stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
