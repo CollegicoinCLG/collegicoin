@@ -113,7 +113,7 @@ public:
         pchMessageStart[1]             = 0xdc;
         pchMessageStart[2]             = 0x21;
         pchMessageStart[3]             = 0xcb;
-        vAlertPubKey                   = ParseHex("04307320ddf6bb1f1847ed4814515742bda9bb10415ce492f669a7ea7c4590e520b60febafd3a84b3c5528a303017bde0a88bbc7b78eee117ee6c4ba6f7c9e4a7a");
+        vAlertPubKey                   = ParseHex("043043c5e0bb9593afe201dab796d306409dbeaa6edafac65458b1cdc475f74dbd87aa4c4141c08213a5fc982c1cae4439bbfa50e8bf065f8deda0608ba30b920a");
         nDefaultPort                   = 12034;
         nSubsidyHalvingInterval        = 1050000;
         nMaxReorganizationDepth        = 100;
@@ -190,13 +190,13 @@ public:
         fHeadersFirstSyncingActive     = false;
 
         nPoolMaxTransactions           = 3;
-        strSporkKey                    = "04f9cb975c94dc0037ba350e19f09566239439b5c9ed1729a4dfb257e5d2b75759bb1fa2c72f4a5270c9cb9e4465c213cfeac65a2b83f2484ad297a3991cc7020a";
-        strMasternodePoolDummyAddress  = "SYuYowBAuCLdgSUDEvFp9CGzK2isZXHN7r";
+        strSporkKey                    = "040e38a80b9ac584aca6e4e8fcf3abaaa61f31fad793174826a287c0dc7b776bdfdda54f7ba5e5d491fd51ce595cdf9f2ea8ae49ba779e91c618fec7efab21222d";
+        strMasternodePoolDummyAddress  = "CSRM2oehzPJKFRHURXM1Nm62hALFY3pgxJ";
         nStartMasternodePayments       = 1525192183; 
 
         nBudget_Fee_Confirmations      = 6; // Number of confirmations for the finalization fee
 
-        strTreasuryAddress             = "SeRhGrDny4xXFGt9dPwBHSYARNpb2dzCdh";
+        strTreasuryAddress             = "CQW65T5MNRzHWv6e5JYcCSitrLmM9qRYFP";
     }
 
     const Checkpoints::CCheckpointData& Checkpoints() const
@@ -220,7 +220,7 @@ public:
         pchMessageStart[1]             = 0x2d;
         pchMessageStart[2]             = 0x32;
         pchMessageStart[3]             = 0xbc;
-        vAlertPubKey                   = ParseHex("04abac66ae10ca99a58d2bf464ed97328c69a5c96ddaacae797c595990c86e01d4c9f16d490d047dac06a24c36e1575e6f6ee5e49f3677df12e85ae1ed9c37fa88");
+        vAlertPubKey                   = ParseHex("043f79a51bd03c9a91f4302fc6136574c69ebce273e0df8bbfb1e57ad9236f1c777db44d363c80c13029b2aaf84522fc426bad4ce6efe5772a8843f95abdf3e5f2");
         nDefaultPort                   = 13034;
         nEnforceBlockUpgradeMajority   = 51;
         nRejectBlockOutdatedMajority   = 75;
@@ -242,8 +242,8 @@ public:
         nMaxMoneyOut                   = 12000000 * COIN;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nTime                  = 1549580953;
-        genesis.nNonce                 = 1734805;
+        genesis.nTime                  = 1549621269;
+        genesis.nNonce                 = 3177145;
 
         hashGenesisBlock               = genesis.GetHash();
         assert(hashGenesisBlock        == uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
@@ -268,13 +268,13 @@ public:
         fTestnetToBeDeprecatedFieldRPC = true;
 
         nPoolMaxTransactions           = 2;
-        strSporkKey                    = "04bb4cc355d8b119f89b3cf9353f2c9e50fbea04276cdd97f4d7a6a9eaeec929e232d4a45431e28a45df5ed5a96162ece24f3b398adfc03544239fd33465d5620f";
-        strMasternodePoolDummyAddress  = "gbJ4Qad4xc77PpLzMx6rUegAs6aUPWkcUq";
+        strSporkKey                    = "04983352dc6bd61f60d0913ed562b76ab2f8ea7d991830572981b8184acfa5a76b258ec4862d7c327471bb9e8dee135fbed1afb2fb7af24181e925e47f951f50fd";
+        strMasternodePoolDummyAddress  = "cP5DQxNJ41jaDqiRNJeJMjSF1auhfW9zMQ";
         nStartMasternodePayments       = genesis.nTime + 86400; // 24 hours after genesis
         nBudget_Fee_Confirmations      = 3; // Number of confirmations for the finalization fee. We have to make this very short
                                        // here because we only have a 8 block finalization window on testnet
 
-        strTreasuryAddress             = "sc3NySryJN1XpJ1MbNf3knBLXEKMbnqNyz";
+        strTreasuryAddress             = "cHk54sqsqmU4z2bxty1vak3iDAt1ApP15y";
     }
     const Checkpoints::CCheckpointData& Checkpoints() const
     {
