@@ -1559,11 +1559,11 @@ int64_t GetBlockValue(int nHeight)
              if (nHeight >=      1 && nHeight <=      1) {nSubsidy = 2500000.00 * COIN;}
         else if (nHeight >=      2 && nHeight <=    500) {nSubsidy =     190.20 * COIN;}
         else if (nHeight >=    501 && nHeight <=   1000) {nSubsidy =       1.50 * COIN;}
-        else if (nHeight >=   2001 && nHeight <=   2000) {nSubsidy =       1.70 * COIN;}
-        else if (nHeight >=   3001 && nHeight <=   3000) {nSubsidy =       1.90 * COIN;}
-        else if (nHeight >=   4001 && nHeight <=   4000) {nSubsidy =       2.10 * COIN;}
-        else if (nHeight >=   5001 && nHeight <=   5000) {nSubsidy =       2.30 * COIN;}
-        else if (nHeight >=   6001                     ) {nSubsidy =       2.50 * COIN;}
+        else if (nHeight >=   1001 && nHeight <=   2000) {nSubsidy =       1.70 * COIN;}
+        else if (nHeight >=   2001 && nHeight <=   3000) {nSubsidy =       1.90 * COIN;}
+        else if (nHeight >=   3001 && nHeight <=   4000) {nSubsidy =       2.10 * COIN;}
+        else if (nHeight >=   4001 && nHeight <=   5000) {nSubsidy =       2.30 * COIN;}
+        else if (nHeight >=   5001                     ) {nSubsidy =       2.50 * COIN;}
 
         return nSubsidy;
     }
@@ -1617,11 +1617,11 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
              if (nHeight >=      1 && nHeight <=      1) {nSubsidy = 0;}
         else if (nHeight >=      2 && nHeight <=    500) {nSubsidy = 0;}
         else if (nHeight >=    501 && nHeight <=   1000) {nSubsidy = blockValue * 0.62;}
-        else if (nHeight >=   2001 && nHeight <=   2000) {nSubsidy = blockValue * 0.64;}
-        else if (nHeight >=   3001 && nHeight <=   3000) {nSubsidy = blockValue * 0.66;}
-        else if (nHeight >=   4001 && nHeight <=   4000) {nSubsidy = blockValue * 0.68;}
-        else if (nHeight >=   5001 && nHeight <=   5000) {nSubsidy = blockValue * 0.70;}
-        else if (nHeight >=   6001                     ) {nSubsidy = blockValue * 0.72;}
+        else if (nHeight >=   1001 && nHeight <=   2000) {nSubsidy = blockValue * 0.64;}
+        else if (nHeight >=   2001 && nHeight <=   3000) {nSubsidy = blockValue * 0.66;}
+        else if (nHeight >=   3001 && nHeight <=   4000) {nSubsidy = blockValue * 0.68;}
+        else if (nHeight >=   4001 && nHeight <=   5000) {nSubsidy = blockValue * 0.70;}
+        else if (nHeight >=   5001                     ) {nSubsidy = blockValue * 0.72;}
 
         return nSubsidy;
     }
