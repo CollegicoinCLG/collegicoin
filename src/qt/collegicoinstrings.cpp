@@ -203,10 +203,10 @@ QT_TRANSLATE_NOOP("collegicoin-core", ""
 QT_TRANSLATE_NOOP("collegicoin-core", ""
 "You must specify a masternodeprivkey in the configuration. Please see "
 "documentation for help."),
-QT_TRANSLATE_NOOP("collegicoin-core", "(12034 could be used only on mainnet)"),
+QT_TRANSLATE_NOOP("collegicoin-core", "(12036 could be used only on mainnet)"),
 QT_TRANSLATE_NOOP("collegicoin-core", "(default: %s)"),
 QT_TRANSLATE_NOOP("collegicoin-core", "(default: 1)"),
-QT_TRANSLATE_NOOP("collegicoin-core", "(must be 12034 for mainnet)"),
+QT_TRANSLATE_NOOP("collegicoin-core", "(must be 12036 for mainnet)"),
 QT_TRANSLATE_NOOP("collegicoin-core", "<category> can be:"),
 QT_TRANSLATE_NOOP("collegicoin-core", "Accept command line and JSON-RPC commands"),
 QT_TRANSLATE_NOOP("collegicoin-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),
