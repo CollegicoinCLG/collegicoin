@@ -339,8 +339,8 @@ void OverviewPage::SetLinks()
     ui->labelLinks2->setText("Whitepaper:");
     ui->labelLinks3->setText("Block Explorer:");
     ui->labelLinks4->setText("Discord:");
-    ui->labelLinks5->setText("Github:");
-    ui->labelLinks6->setText("");
+    ui->labelLinks5->setText("Twitter:");
+    ui->labelLinks6->setText("Github:");
     ui->labelLinks7->setText("");
 
     ui->labelLinksUrl1->setText("<a href=\"https://www.collegicoin.com/\">https://www.collegicoin.com/</a>");
