@@ -11,8 +11,8 @@ Consensus mechanism | Proof-of-Stake
 Algorithm | Quark
 Collateral | 2,000 CLG
 Features | SwiftTX, budget, treausury and masternode governance is enabled
-P2P Port | 12036
-RPC Port | 12037
+P2P Port | 21036
+RPC Port | 21037
 
 ### Reward Schema
 
