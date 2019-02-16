@@ -30,14 +30,14 @@ struct SeedSpec6 {
 /*
 ---------------
 algorithm: quark
-pzTimestamp: 20190208 CollegiCoin by ZioFabry
+pzTimestamp: 20190215 CollegiCoin by ZioFabry
 pubkey: 04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f
 bits: 504365040
-time: 1549621269
-merkle root hash: 4c313fe4670bce96eacac6676ef6a674a1249b236efec6b469d118c971c3b1c1
+time: 1550270303
+merkle root hash: 522946e630d02801117900b066f6fd2131966cdece5af730fea2289c38f8014a
 Searching for genesis hash...
-nonce: 3177145
-genesis hash: 000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac
+nonce: 141518
+genesis hash: 0000091d9e611eaea230e6469b35207b7ce9374663c76f4921c98b74bbdafa98
 */
 
 /**
@@ -68,30 +68,30 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 // + Contains no strange transactions
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
-    (0, uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
+    (0, uint256("0x0000091d9e611eaea230e6469b35207b7ce9374663c76f4921c98b74bbdafa98"));
 
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1549621269, // * UNIX timestamp of last checkpoint block
+    1550270303, // * UNIX timestamp of last checkpoint block
     0,          // * total number of transactions between genesis and last checkpoint (the tx=... number in the SetBestChain debug.log lines)
     1440        // * estimated number of transactions per day after checkpoint
 };
 
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
-    boost::assign::map_list_of(0, uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
+    boost::assign::map_list_of(0, uint256("0x0000091d9e611eaea230e6469b35207b7ce9374663c76f4921c98b74bbdafa98"));
 
 static const Checkpoints::CCheckpointData dataTestnet = {
     &mapCheckpointsTestnet,
-    1549621269, // * UNIX timestamp of last checkpoint block
+    1550270303, // * UNIX timestamp of last checkpoint block
     0,          // * total number of transactions between genesis and last checkpoint (the tx=... number in the SetBestChain debug.log lines)
     1440        // * estimated number of transactions per day after checkpoint
 };
 
 static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
-    boost::assign::map_list_of(0, uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
+    boost::assign::map_list_of(0, uint256("0x0000091d9e611eaea230e6469b35207b7ce9374663c76f4921c98b74bbdafa98"));
 static const Checkpoints::CCheckpointData dataRegtest = {
     &mapCheckpointsRegtest,
-    1549621269, // * UNIX timestamp of last checkpoint block
+    1550270303, // * UNIX timestamp of last checkpoint block
     0,          // * total number of transactions between genesis and last checkpoint (the tx=... number in the SetBestChain debug.log lines)
     1440        // * estimated number of transactions per day after checkpoint
 };
@@ -114,7 +114,7 @@ public:
         pchMessageStart[2]             = 0x21;
         pchMessageStart[3]             = 0xcb;
         vAlertPubKey                   = ParseHex("043043c5e0bb9593afe201dab796d306409dbeaa6edafac65458b1cdc475f74dbd87aa4c4141c08213a5fc982c1cae4439bbfa50e8bf065f8deda0608ba30b920a");
-        nDefaultPort                   = 12036;
+        nDefaultPort                   = 21036;
         nSubsidyHalvingInterval        = 1050000;
         nMaxReorganizationDepth        = 100;
         nEnforceBlockUpgradeMajority   = 750;
@@ -138,7 +138,7 @@ public:
         nLastPOWBlock                  = 1000;
         nModifierUpdateBlock           = 1;
 
-        const char* pszTimestamp       = "20190208 CollegiCoin by ZioFabry";
+        const char* pszTimestamp       = "20190215 CollegiCoin by ZioFabry";
         CMutableTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -149,13 +149,13 @@ public:
         genesis.hashPrevBlock          = 0;
         genesis.hashMerkleRoot         = genesis.BuildMerkleTree();
         genesis.nVersion               = 1;
-        genesis.nTime                  = 1549621269;
+        genesis.nTime                  = 1550270303;
         genesis.nBits                  = 504365040;
-        genesis.nNonce                 = 3177145;
+        genesis.nNonce                 = 141518;
 
         hashGenesisBlock               = genesis.GetHash();
-        assert(hashGenesisBlock        == uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
-        assert(genesis.hashMerkleRoot  == uint256("0x4c313fe4670bce96eacac6676ef6a674a1249b236efec6b469d118c971c3b1c1"));
+        assert(hashGenesisBlock        == uint256("0x0000091d9e611eaea230e6469b35207b7ce9374663c76f4921c98b74bbdafa98"));
+        assert(genesis.hashMerkleRoot  == uint256("0x522946e630d02801117900b066f6fd2131966cdece5af730fea2289c38f8014a"));
  
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,  28);  // Start with 'C' from https://en.bitcoin.it/wiki/List_of_address_prefixes
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,  63);  // Start with 'S' from https://en.bitcoin.it/wiki/List_of_address_prefixes
@@ -174,11 +174,7 @@ public:
         vSeeds.push_back(CDNSSeedData("seed02.collegicoin.com", "seed02.collegicoin.com"));
         vSeeds.push_back(CDNSSeedData("seed03.collegicoin.com", "seed03.collegicoin.com"));
         vSeeds.push_back(CDNSSeedData("seed04.collegicoin.com", "seed04.collegicoin.com"));
-        vSeeds.push_back(CDNSSeedData("seed05.collegicoin.com", "seed05.collegicoin.com"));
-        vSeeds.push_back(CDNSSeedData("seed06.collegicoin.com", "seed06.collegicoin.com"));
-        vSeeds.push_back(CDNSSeedData("seed07.collegicoin.com", "seed07.collegicoin.com"));
-        vSeeds.push_back(CDNSSeedData("seed08.collegicoin.com", "seed08.collegicoin.com"));
-        vSeeds.push_back(CDNSSeedData("seed09.collegicoin.com", "seed09.collegicoin.com"));
+        vSeeds.push_back(CDNSSeedData("explorer.collegicoin.com", "explorer.collegicoin.com"));
 
         fMiningRequiresPeers           = true;
         fAllowMinDifficultyBlocks      = false;
@@ -221,7 +217,7 @@ public:
         pchMessageStart[2]             = 0x32;
         pchMessageStart[3]             = 0xbc;
         vAlertPubKey                   = ParseHex("043f79a51bd03c9a91f4302fc6136574c69ebce273e0df8bbfb1e57ad9236f1c777db44d363c80c13029b2aaf84522fc426bad4ce6efe5772a8843f95abdf3e5f2");
-        nDefaultPort                   = 13036;
+        nDefaultPort                   = 22036;
         nEnforceBlockUpgradeMajority   = 51;
         nRejectBlockOutdatedMajority   = 75;
         nToCheckBlockUpgradeMajority   = 100;
@@ -242,12 +238,12 @@ public:
         nMaxMoneyOut                   = 12000000 * COIN;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nTime                  = 1549621269;
-        genesis.nNonce                 = 3177145;
+        genesis.nTime                  = 1550270303;
+        genesis.nNonce                 = 141518;
 
         hashGenesisBlock               = genesis.GetHash();
-        assert(hashGenesisBlock        == uint256("0x000003c744c556466499b737625ed59387410da33b2664dac09fed0ee768e1ac"));
-        assert(genesis.hashMerkleRoot  == uint256("0x4c313fe4670bce96eacac6676ef6a674a1249b236efec6b469d118c971c3b1c1"));
+        assert(hashGenesisBlock        == uint256("0x0000091d9e611eaea230e6469b35207b7ce9374663c76f4921c98b74bbdafa98"));
+        assert(genesis.hashMerkleRoot  == uint256("0x522946e630d02801117900b066f6fd2131966cdece5af730fea2289c38f8014a"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,  87);  // Start with 'c' from https://en.bitcoin.it/wiki/List_of_address_prefixes
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 125);  // Start with 's' from https://en.bitcoin.it/wiki/List_of_address_prefixes
