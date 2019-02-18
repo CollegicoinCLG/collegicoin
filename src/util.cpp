@@ -412,13 +412,13 @@ void PrintExceptionContinue(std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-// Windows < Vista: C:\Documents and Settings\Username\Application Data\Collegicoin
-// Windows >= Vista: C:\Users\Username\AppData\Roaming\Collegicoin
-// Mac: ~/Library/Application Support/Collegicoin
-// Unix: ~/.collegicoin
+// Windows < Vista: C:\Documents and Settings\Username\Application Data\CollegicoinCore
+// Windows >= Vista: C:\Users\Username\AppData\Roaming\CollegicoinCore
+// Mac: ~/Library/Application Support/CollegicoinCore
+// Unix: ~/.collegicoincore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Collegicoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "CollegicoinCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -430,10 +430,10 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     TryCreateDirectory(pathRet);
-    return pathRet / "Collegicoin";
+    return pathRet / "CollegicoinCore";
 #else
     // Unix
-    return pathRet / ".collegicoin";
+    return pathRet / ".collegicoincore";
 #endif
 #endif
 }
