@@ -2132,7 +2132,7 @@ https://www.transifex.com/clg-project/clg-project-translations</translation>
     </message>
     <message>
         <source>CLG Balance</source>
-        <translation>CLG Saldi</translation>
+        <translation>CLG Balance</translation>
     </message>
     <message>
         <source>Pending:</source>
@@ -2184,7 +2184,7 @@ Onvolwassen: bevestigd, maar minder dan 1 mint van dezelfde denominatie nadat he
     </message>
     <message>
         <source>Combined Balance (including unconfirmed and immature coins)</source>
-        <translation>Gecombineerde Saldi (inclusief onbevestigde en onvolwassen munten)</translation>
+        <translation>Gecombineerde Balance (inclusief onbevestigde en onvolwassen munten)</translation>
     </message>
     <message>
         <source>Combined Balance</source>
@@ -2555,11 +2555,11 @@ zClg zijn volwassen wanneer zij meer dan 20 bevestigingen hebben EN meer dan 2 m
     </message>
     <message>
         <source>Total Balance including unconfirmed and immature zCLG</source>
-        <translation>Totale Saldi, inclusief onbevestigde en onvolwassen zCLG</translation>
+        <translation>Totale Balance, inclusief onbevestigde en onvolwassen zCLG</translation>
     </message>
     <message>
-        <source>Total Zerocoin  Balance:</source>
-        <translation>Totale Zerocoin Saldi:</translation>
+        <source>Total Zerocoin Balance:</source>
+        <translation>Totale Zerocoin Balance:</translation>
     </message>
     <message>
         <source>Denominations with value 1:</source>
