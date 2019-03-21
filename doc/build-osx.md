@@ -38,7 +38,7 @@ Instructions: Homebrew
 
 #### Install dependencies using Homebrew
 
-        brew install autoconf automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf qt5 libzmq
+        brew install autoconf automake berkeley-db4 libtool boost@1.57 miniupnpc openssl pkg-config protobuf qt5 zmq libevent librsvg gmp
 
 ### Building `collegicoind`
 
@@ -49,9 +49,15 @@ Instructions: Homebrew
 
 2.  Build collegicoind:
 
+        export PATH="/usr/local/opt/openssl/bin:$PATH"
+        export LDFLAGS="-L/usr/local/opt/boost@1.57/lib"
+        export CPPFLAGS="-I/usr/local/opt/boost@1.57/include"
+        export LDFLAGS="$LDFLAGS -L/usr/local/opt/openssl/lib"
+        export CPPFLAGS="$CPPFLAGS -I/usr/local/opt/openssl/include"
+        export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
         ./autogen.sh
-        ./configure --with-gui=qt5
-        make
+        ./configure --with-gui=qt5 --with-boost-system=boost_system-mt --with-boost-filesystem=boost_filesystem-mt --with-boost-thread=boost_thread-mt --with-boost-chrono=boost_chrono-mt --with-boost-program-options=boost_program_options-mt --disable-tests
+        make -j4
 
 3.  It is also a good idea to build and run the unit tests:
 
@@ -60,6 +66,10 @@ Instructions: Homebrew
 4.  (Optional) You can also install collegicoind to your path:
 
         make install
+
+5.  (Optional) Create DMG file for Collegicoin-Qt.app
+
+        make deploy
 
 Use Qt Creator as IDE
 ------------------------
