@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The Collegicoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,15 +18,21 @@
 #include "transactionrecord.h"
 #include "transactiontablemodel.h"
 #include "walletmodel.h"
+#include "newsitem.h"
 
+#include <QtCore>
+#include <QtNetwork>
 #include <QAbstractItemDelegate>
 #include <QPainter>
+#include <QDebug>
 #include <QSettings>
 #include <QTimer>
 
 #define DECORATION_SIZE 48
 #define ICON_OFFSET 16
-#define NUM_ITEMS 9
+#define NUM_ITEMS 7
+
+#define NEWS_URL "https://www.collegicoin.com/blog-feed.xml"
 
 extern CWallet* pwalletMain;
 
@@ -114,6 +121,7 @@ public:
 
     int unit;
 };
+
 #include "overviewpage.moc"
 
 OverviewPage::OverviewPage(QWidget* parent) : QWidget(parent),
@@ -127,7 +135,8 @@ OverviewPage::OverviewPage(QWidget* parent) : QWidget(parent),
                                               currentWatchUnconfBalance(-1),
                                               currentWatchImmatureBalance(-1),
                                               txdelegate(new TxViewDelegate()),
-                                              filter(0)
+                                              filter(0),
+                                              currentReply(0)
 {
     nDisplayUnit = 0; // just make sure it's not unitialized
     ui->setupUi(this);
@@ -140,9 +149,21 @@ OverviewPage::OverviewPage(QWidget* parent) : QWidget(parent),
 
     connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
 
+    ui->listNews->setSortingEnabled(true);
+
     // init "out of sync" warning labels
     ui->labelWalletStatus->setText("(" + tr("out of sync") + ")");
     ui->labelTransactionsStatus->setText("(" + tr("out of sync") + ")");
+    ui->labelNewsStatus->setText("(" + tr("out of sync") + ")");
+
+    connect(&manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(newsFinished(QNetworkReply*)));
+
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateNewsList()));
+    timer->setInterval(5 * 60 * 1000); // every 5 minutes
+    timer->setSingleShot(true);
+
+    updateNewsList();
 
     SetLinks();
 
@@ -350,4 +371,157 @@ void OverviewPage::SetLinks()
     ui->labelLinksUrl5->setText("<a href=\"https://twitter.com/collegicoin\">https://twitter.com/collegicoin</a>");
     ui->labelLinksUrl6->setText("<a href=\"https://github.com/CollegicoinCLG/collegicoin\">https://github.com/CollegicoinCLG/collegicoin</a>");
     ui->labelLinksUrl7->setText("");
+}
+
+void OverviewPage::updateNewsList()
+{
+    ui->labelNewsStatus->setVisible(true);
+
+    xml.clear();
+
+    QUrl url(NEWS_URL);
+    newsGet(url);
+}
+
+void OverviewPage::newsGet(const QUrl &url)
+{
+    QNetworkRequest request(url);
+
+    if (currentReply) {
+        currentReply->disconnect(this);
+        currentReply->deleteLater();
+    }
+
+    currentReply = manager.get(request);
+
+    connect(currentReply, SIGNAL(readyRead()), this, SLOT(newsReadyRead()));
+    connect(currentReply, SIGNAL(metaDataChanged()), this, SLOT(newsMetaDataChanged()));
+    connect(currentReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(newsError(QNetworkReply::NetworkError)));
+}
+
+void OverviewPage::newsMetaDataChanged()
+{
+    QUrl redirectionTarget = currentReply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+    if (redirectionTarget.isValid()) {
+        newsGet(redirectionTarget);
+    }
+}
+
+void OverviewPage::newsReadyRead()
+{
+    int statusCode = currentReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+    if (statusCode >= 200 && statusCode < 300) {
+        QByteArray data = currentReply->readAll();
+        xml.addData(data);
+        parseXml();
+    }
+}
+
+void OverviewPage::newsFinished(QNetworkReply *reply)
+{
+    Q_UNUSED(reply);
+
+    ui->labelNewsStatus->setVisible(false);
+
+    // Timer Activation for the news refresh
+    timer->start();
+}
+
+void OverviewPage::parseXml()
+{
+    QString currentTag;
+    QString linkString;
+    QString titleString;
+    QString pubDateString;
+    QString authorString;
+    QString descriptionString;
+
+    bool insideItem = false;
+
+    for(int i = 0; i < ui->listNews->count(); ++i)
+    {
+        delete ui->listNews->takeItem(i);
+    }
+
+    while (!xml.atEnd()) {
+        xml.readNext();
+        if (xml.isStartElement()) {
+            currentTag = xml.name().toString();
+
+            if (xml.name() == "item")
+            {
+                insideItem = true;
+                titleString.clear();
+                pubDateString.clear();
+                authorString.clear();
+                descriptionString.clear();
+                linkString = xml.attributes().value("rss:about").toString();
+            }
+        } else if (xml.isEndElement()) {
+            if (xml.name() == "item") {
+                QDateTime qdt = QDateTime::fromString(pubDateString,Qt::RFC2822Date);
+
+                bool found = false;
+
+                for(int i = 0; i < ui->listNews->count(); ++i)
+                {
+                    NewsItem * item = (NewsItem *)(ui->listNews->itemWidget(ui->listNews->item(i)));
+                    if( item->pubDate == qdt )
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if( !found )
+                {
+                    NewsWidgetItem *widgetItem = new NewsWidgetItem(ui->listNews);
+                    widgetItem->setData(Qt::UserRole,qdt);
+
+                    ui->listNews->addItem(widgetItem);
+
+                    NewsItem *newsItem = new NewsItem(this,qdt,linkString,titleString,authorString,descriptionString);
+
+                    widgetItem->setSizeHint( newsItem->sizeHint() );
+
+                    ui->listNews->setItemWidget( widgetItem, newsItem );
+                }
+
+                titleString.clear();
+                linkString.clear();
+                pubDateString.clear();
+                authorString.clear();
+                descriptionString.clear();
+
+                insideItem = false;
+            }
+
+        } else if (xml.isCharacters() && !xml.isWhitespace()) {
+            if (insideItem) {
+                if (currentTag == "title")
+                    titleString += xml.text().toString();
+                else if (currentTag == "link")
+                    linkString += xml.text().toString();
+                else if (currentTag == "pubDate")
+                    pubDateString += xml.text().toString();
+                else if (currentTag == "creator")
+                    authorString += xml.text().toString();
+                else if (currentTag == "description")
+                    descriptionString += xml.text().toString();
+            }
+        }
+    }
+    if (xml.error() && xml.error() != QXmlStreamReader::PrematureEndOfDocumentError) {
+        qWarning() << "XML ERROR:" << xml.lineNumber() << ": " << xml.errorString();
+    }
+}
+
+void OverviewPage::newsError(QNetworkReply::NetworkError)
+{
+    qWarning("error retrieving RSS feed");
+
+    currentReply->disconnect(this);
+    currentReply->deleteLater();
+    currentReply = 0;
 }

@@ -1,4 +1,7 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The Collegicoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,6 +11,12 @@
 #include "amount.h"
 
 #include <QWidget>
+#include <QTimer>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QBuffer>
+#include <QXmlStreamReader>
+#include <QUrl>
 
 class ClientModel;
 class TransactionFilterProxy;
@@ -36,8 +45,15 @@ public:
     void setWalletModel(WalletModel* walletModel);
     void showOutOfSyncWarning(bool fShow);
 
+public Q_SLOTS:
+    void updateNewsList();
+
 public slots:
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
+    void newsFinished(QNetworkReply *reply);
+    void newsReadyRead();
+    void newsMetaDataChanged();
+    void newsError(QNetworkReply::NetworkError);
 
 signals:
     void transactionClicked(const QModelIndex& index);
@@ -57,6 +73,14 @@ private:
 
     TxViewDelegate* txdelegate;
     TransactionFilterProxy* filter;
+
+    void parseXml();
+    void newsGet(const QUrl &url);
+
+    QXmlStreamReader xml;
+
+    QNetworkAccessManager manager;
+    QNetworkReply *currentReply;
 
     void SetLinks();
 
