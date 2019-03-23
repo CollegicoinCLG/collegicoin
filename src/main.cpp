@@ -2208,19 +2208,24 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs]\n", (unsigned)block.vtx.size(), 0.001 * (nTime1 - nTimeStart), 0.001 * (nTime1 - nTimeStart) / block.vtx.size(), nInputs <= 1 ? 0 : 0.001 * (nTime1 - nTimeStart) / (nInputs - 1), nTimeConnect * 0.000001);
 
     //PoW phase redistributed fees to miner. PoS stage destroys fees.
-    CAmount nExpectedMint = GetBlockValue(pindex->pprev->nHeight);
+    CAmount nExpectedMint = GetBlockValue(pindex->nHeight);
     if (block.IsProofOfWork())
         nExpectedMint += nFees;
 
     if (!IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
-        return state.DoS(100,
-            error("ConnectBlock() : reward pays too much (actual=%s vs limit=%s)",
-                FormatMoney(pindex->nMint), FormatMoney(nExpectedMint)),
-            REJECT_INVALID, "bad-cb-amount");
+        // Due to the bugfix on the call of GetBlockValue above called
+        // I must skip the wrong block value of the blocks 1001 & 44201
+        if( pindex->nHeight != 1001 && pindex->nHeight != 44201)
+        {
+            return state.DoS(100,
+                error("ConnectBlock() : reward pays too much (actual=%s vs limit=%s)", FormatMoney(pindex->nMint), FormatMoney(nExpectedMint)),
+                REJECT_INVALID, "bad-cb-amount");
+        }
     }
 
     if (!control.Wait())
         return state.DoS(100, false);
+
     int64_t nTime2 = GetTimeMicros();
     nTimeVerify += nTime2 - nTimeStart;
     LogPrint("bench", "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n", nInputs - 1, 0.001 * (nTime2 - nTimeStart), nInputs <= 1 ? 0 : 0.001 * (nTime2 - nTimeStart) / (nInputs - 1), nTimeVerify * 0.000001);
@@ -4666,7 +4671,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         // CLG: We use certain sporks during IBD, so check to see if they are
         // available. If not, ask the first peer connected for them.
-        bool fMissingSporks = !pSporkDB->SporkExists(SPORK_15_PROTOCOL_ENFORCEMENT_1) 
+        bool fMissingSporks = !pSporkDB->SporkExists(SPORK_15_PROTOCOL_ENFORCEMENT_1)
                            && !pSporkDB->SporkExists(SPORK_16_PROTOCOL_ENFORCEMENT_2)
                            && !pSporkDB->SporkExists(SPORK_17_PROTOCOL_ENFORCEMENT_3)
                            && !pSporkDB->SporkExists(SPORK_18_PROTOCOL_ENFORCEMENT_4)
@@ -5403,7 +5408,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             // Avoid feedback loops by preventing reject messages from triggering a new reject message.
             LogPrint("net", "Unparseable reject message received\n");
         }
-        
+
         // If I receive a REJECT_OBSOLETE reason I check the current Protocol Version
         if( ccode == REJECT_OBSOLETE )
         {
@@ -5437,19 +5442,19 @@ int ActiveProtocol()
 {
     if (IsSporkActive(SPORK_19_PROTOCOL_ENFORCEMENT_5))
         return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT_5;
-    
+
     if (IsSporkActive(SPORK_18_PROTOCOL_ENFORCEMENT_4))
         return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT_5;
-    
+
     if (IsSporkActive(SPORK_17_PROTOCOL_ENFORCEMENT_3))
         return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT_4;
-    
+
     if (IsSporkActive(SPORK_16_PROTOCOL_ENFORCEMENT_2))
         return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT_3;
-    
+
     if (IsSporkActive(SPORK_15_PROTOCOL_ENFORCEMENT_1))
         return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT_2;
-    
+
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT_1;
 }
 
