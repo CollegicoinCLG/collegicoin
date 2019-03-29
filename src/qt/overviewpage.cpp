@@ -32,7 +32,7 @@
 #define ICON_OFFSET 16
 #define NUM_ITEMS 7
 
-#define NEWS_URL "https://www.collegicoin.com/blog-feed.xml"
+#define NEWS_URL "https://collegicoin.net/category/news/feed"
 
 extern CWallet* pwalletMain;
 
