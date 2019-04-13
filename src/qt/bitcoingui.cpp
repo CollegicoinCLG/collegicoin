@@ -368,8 +368,6 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
-    connect(proposalAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(proposalAction, SIGNAL(triggered()), this, SLOT(gotoProposalPage()));
 
 #endif // ENABLE_WALLET
 
@@ -384,6 +382,9 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     proposalAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
 #endif
     tabGroup->addAction(proposalAction);
+
+    connect(proposalAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(proposalAction, SIGNAL(triggered()), this, SLOT(gotoProposalPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setStatusTip(tr("Quit application"));
