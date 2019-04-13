@@ -1,5 +1,7 @@
 // Copyright (c) 2011-2015 The Bitcoin developers
 // Copyright (c) 2016-2018 The PIVX developers
+// Copyright (c) 2019 The Phore developers
+// Copyright (c) 2019 The Collegicoin developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,6 +25,7 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
+#include "proposallist.h"
 
 #include "ui_interface.h"
 
@@ -129,6 +132,14 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
         masternodeListPage = new MasternodeList();
         addWidget(masternodeListPage);
     }
+
+    QVBoxLayout* vbox_2 = new QVBoxLayout();
+    proposalList = new ProposalList(this);
+    vbox_2->addWidget(proposalList);
+    vbox_2->setStretch(1, 1);
+    proposalListPage = new QWidget(this);
+    proposalListPage->setLayout(vbox_2);
+    addWidget(proposalListPage);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -263,6 +274,10 @@ void WalletView::gotoMasternodePage()
 void WalletView::gotoReceiveCoinsPage()
 {
     setCurrentWidget(receiveCoinsPage);
+}
+void WalletView::gotoProposalPage()
+{
+    setCurrentWidget(proposalListPage);
 }
 
 void WalletView::gotoSendCoinsPage(QString addr)
