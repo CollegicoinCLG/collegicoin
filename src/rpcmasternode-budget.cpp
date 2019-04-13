@@ -1,5 +1,7 @@
 // Copyright (c) 2014-2015 The Dash Developers
 // Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2019 The Phore developers
+// Copyright (c) 2019 The Collegicoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -175,6 +177,8 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("preparebudget", "\"test-proposal\" \"https://savebitcoin.io/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
             HelpExampleRpc("preparebudget", "\"test-proposal\" \"https://savebitcoin.io/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
@@ -979,7 +983,12 @@ UniValue mnfinalbudget(const UniValue& params, bool fHelp)
         UniValue resultObj(UniValue::VOBJ);
 
         std::vector<CFinalizedBudget*> winningFbs = budget.GetFinalizedBudgets();
-        BOOST_FOREACH (CFinalizedBudget* finalizedBudget, winningFbs) {
+        BOOST_FOREACH (CFinalizedBudget* finalizedBudget, winningFbs)
+        {
+            // Ignore old finalized budgets to avoid displaying misleading error
+            // messages about missing proposals.  Include the previous final budget cycle.
+            if (finalizedBudget->GetBlockStart() < (chainActive.Tip()->nHeight - GetBudgetPaymentCycleBlocks())) continue;
+
             UniValue bObj(UniValue::VOBJ);
             bObj.push_back(Pair("FeeTX", finalizedBudget->nFeeTXHash.ToString()));
             bObj.push_back(Pair("Hash", finalizedBudget->GetHash().ToString()));
