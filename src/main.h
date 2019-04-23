@@ -237,6 +237,7 @@ int64_t GetTreasuryPayment(int nHeight, int64_t blockValue);
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock, bool fProofOfStake);
 
 bool IsMasternodeCollateral(CAmount value);
+CAmount GetMasternodeCollateral();
 bool ActivateBestChain(CValidationState& state, CBlock* pblock = NULL, bool fAlreadyChecked = false);
 CAmount GetBlockValue(int nHeight);
 

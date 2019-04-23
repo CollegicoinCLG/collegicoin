@@ -1669,7 +1669,15 @@ int64_t GetTreasuryPayment(int nHeight, int64_t blockValue)
 
 bool IsMasternodeCollateral(CAmount value)
 {
-    return value == MASTERNODE_COLLATERAL;
+    return value == GetMasternodeCollateral();
+}
+
+CAmount GetMasternodeCollateral()
+{
+    if( chainActive.Height() >= 112000 )
+        return MASTERNODE_COLLATERAL_AFTER_112000;
+
+    return MASTERNODE_COLLATERAL;
 }
 
 bool IsInitialBlockDownload()
