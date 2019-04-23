@@ -468,6 +468,11 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
     CReserveKey reservekey(pwallet);
     unsigned int nExtraNonce = 0;
 
+    if( fProofOfStake )
+    {
+        MilliSleep(30 * 1000);
+    }
+
     //control the amount of times the client will check for mintable coins
     static bool fMintableCoins = false;
     static int nMintableLastCheck = 0;
@@ -480,7 +485,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
         }
 
         if (fProofOfStake) {
-            if (chainActive.Tip()->nHeight < Params().LAST_POW_BLOCK()) {
+            if (chainActive.Tip()->nHeight < Params().LAST_POW_BLOCK() || fImporting || fReindex) {
                 MilliSleep(5000);
                 continue;
             }
@@ -505,6 +510,8 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 break;
             }
         }
+
+        MilliSleep( 1000 );
 
         //
         // Create new block
