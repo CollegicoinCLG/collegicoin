@@ -158,17 +158,16 @@ OverviewPage::OverviewPage(QWidget* parent) : QWidget(parent),
 
     connect(&manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(newsFinished(QNetworkReply*)));
 
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateNewsList()));
-    timer->setInterval(5 * 60 * 1000); // every 5 minutes
-    timer->setSingleShot(true);
-
-    updateNewsList();
-
     SetLinks();
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
+
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateNewsList()));
+    timer->setInterval(5 * 60 * 1000); // every 5 minutes
+    timer->setSingleShot(true);
+    timer->start();
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex& index)
@@ -425,6 +424,7 @@ void OverviewPage::newsFinished(QNetworkReply *reply)
     ui->labelNewsStatus->setVisible(false);
 
     // Timer Activation for the news refresh
+    timer->setInterval(5 * 60 * 1000); // every 5 minutes
     timer->start();
 }
 
