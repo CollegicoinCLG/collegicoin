@@ -32,7 +32,7 @@
 #define ICON_OFFSET 16
 #define NUM_ITEMS 7
 
-#define NEWS_URL "https://collegicoin.net/category/news/feed"
+#define NEWS_URL "https://feeds.feedburner.com/CollegicoinAvailabilityOfEducationalResources"
 
 extern CWallet* pwalletMain;
 
@@ -165,7 +165,7 @@ OverviewPage::OverviewPage(QWidget* parent) : QWidget(parent),
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateNewsList()));
-    timer->setInterval(5 * 60 * 1000); // every 5 minutes
+    timer->setInterval(5 * 1000); // after 5 seconds of the 1st loop
     timer->setSingleShot(true);
     timer->start();
 }
@@ -365,7 +365,7 @@ void OverviewPage::SetLinks()
 
     ui->labelLinksUrl1->setText("<a href=\"https://www.collegicoin.com/\">https://www.collegicoin.com/</a>");
     ui->labelLinksUrl2->setText("<a href=\"https://www.collegicoin.com/whitepaper\">https://www.collegicoin.com/whitepaper</a>");
-    ui->labelLinksUrl3->setText("<a href=\"http://explorer.collegicoin.com/\">http://explorer.collegicoin.com/</a>");
+    ui->labelLinksUrl3->setText("<a href=\"https://explorer.collegicoin.com/\">https://explorer.collegicoin.com/</a>");
     ui->labelLinksUrl4->setText("<a href=\"https://discord.gg/r34XbnA\">https://discord.gg/r34XbnA</a>");
     ui->labelLinksUrl5->setText("<a href=\"https://twitter.com/collegicoin\">https://twitter.com/collegicoin</a>");
     ui->labelLinksUrl6->setText("<a href=\"https://github.com/CollegicoinCLG/collegicoin\">https://github.com/CollegicoinCLG/collegicoin</a>");
@@ -444,76 +444,89 @@ void OverviewPage::parseXml()
         delete ui->listNews->takeItem(i);
     }
 
-    while (!xml.atEnd()) {
-        xml.readNext();
-        if (xml.isStartElement()) {
-            currentTag = xml.name().toString();
+    try {
+        while (!xml.atEnd()) {
+            xml.readNext();
+            if (xml.isStartElement()) {
+                currentTag = xml.name().toString();
 
-            if (xml.name() == "item")
-            {
-                insideItem = true;
-                titleString.clear();
-                pubDateString.clear();
-                authorString.clear();
-                descriptionString.clear();
-                linkString = xml.attributes().value("rss:about").toString();
-            }
-        } else if (xml.isEndElement()) {
-            if (xml.name() == "item") {
-                QDateTime qdt = QDateTime::fromString(pubDateString,Qt::RFC2822Date);
-
-                bool found = false;
-
-                for(int i = 0; i < ui->listNews->count(); ++i)
+                if (xml.name() == "item")
                 {
-                    NewsItem * item = (NewsItem *)(ui->listNews->itemWidget(ui->listNews->item(i)));
-                    if( item->pubDate == qdt )
+                    insideItem = true;
+                    titleString.clear();
+                    pubDateString.clear();
+                    authorString.clear();
+                    descriptionString.clear();
+                    linkString = xml.attributes().value("rss:about").toString();
+                }
+            } else if (xml.isEndElement()) {
+                if (xml.name() == "item") {
+                    QDateTime qdt = QDateTime::fromString(pubDateString,Qt::RFC2822Date);
+
+                    bool found = false;
+
+                    for(int i = 0; i < ui->listNews->count(); ++i)
                     {
-                        found = true;
-                        break;
+                        NewsItem * item = (NewsItem *)(ui->listNews->itemWidget(ui->listNews->item(i)));
+                        if( item->pubDate == qdt )
+                        {
+                            found = true;
+                            break;
+                        }
                     }
+
+                    if( !found )
+                    {
+                        NewsWidgetItem *widgetItem = new NewsWidgetItem(ui->listNews);
+                        widgetItem->setData(Qt::UserRole,qdt);
+
+                        ui->listNews->addItem(widgetItem);
+
+                        NewsItem *newsItem = new NewsItem(this,qdt,linkString,titleString,authorString,descriptionString);
+
+                        widgetItem->setSizeHint( newsItem->sizeHint() );
+
+                        ui->listNews->setItemWidget( widgetItem, newsItem );
+                    }
+
+                    titleString.clear();
+                    linkString.clear();
+                    pubDateString.clear();
+                    authorString.clear();
+                    descriptionString.clear();
+
+                    insideItem = false;
                 }
 
-                if( !found )
-                {
-                    NewsWidgetItem *widgetItem = new NewsWidgetItem(ui->listNews);
-                    widgetItem->setData(Qt::UserRole,qdt);
-
-                    ui->listNews->addItem(widgetItem);
-
-                    NewsItem *newsItem = new NewsItem(this,qdt,linkString,titleString,authorString,descriptionString);
-
-                    widgetItem->setSizeHint( newsItem->sizeHint() );
-
-                    ui->listNews->setItemWidget( widgetItem, newsItem );
+            } else if (xml.isCharacters() && !xml.isWhitespace()) {
+                if (insideItem) {
+                    if (currentTag == "title")
+                        titleString += xml.text().toString();
+                    else if (currentTag == "link")
+                        linkString += xml.text().toString();
+                    else if (currentTag == "pubDate")
+                        pubDateString += xml.text().toString();
+                    else if (currentTag == "creator")
+                        authorString += xml.text().toString();
+                    else if (currentTag == "description")
+                        descriptionString += xml.text().toString();
                 }
-
-                titleString.clear();
-                linkString.clear();
-                pubDateString.clear();
-                authorString.clear();
-                descriptionString.clear();
-
-                insideItem = false;
-            }
-
-        } else if (xml.isCharacters() && !xml.isWhitespace()) {
-            if (insideItem) {
-                if (currentTag == "title")
-                    titleString += xml.text().toString();
-                else if (currentTag == "link")
-                    linkString += xml.text().toString();
-                else if (currentTag == "pubDate")
-                    pubDateString += xml.text().toString();
-                else if (currentTag == "creator")
-                    authorString += xml.text().toString();
-                else if (currentTag == "description")
-                    descriptionString += xml.text().toString();
             }
         }
+
+        if (xml.error() && xml.error() != QXmlStreamReader::PrematureEndOfDocumentError) {
+            qWarning() << "XML ERROR:" << xml.lineNumber() << ": " << xml.errorString();
+        }
     }
-    if (xml.error() && xml.error() != QXmlStreamReader::PrematureEndOfDocumentError) {
-        qWarning() << "XML ERROR:" << xml.lineNumber() << ": " << xml.errorString();
+
+    catch(std::exception &e)
+    {
+        qFatal("std:exception %s",e.what());
+    }
+
+    catch(...)
+    {
+        qFatal("generic exception");
     }
 }
 
