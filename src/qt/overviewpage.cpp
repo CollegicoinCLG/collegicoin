@@ -165,7 +165,7 @@ OverviewPage::OverviewPage(QWidget* parent) : QWidget(parent),
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateNewsList()));
-    timer->setInterval(5 * 1000); // after 5 seconds of the 1st loop
+    timer->setInterval(10 * 1000); // after 10 seconds on the 1st cycle
     timer->setSingleShot(true);
     timer->start();
 }
@@ -269,7 +269,7 @@ void OverviewPage::updateWatchOnlyLabels(bool showWatchOnly)
     ui->labelWatchonly->setVisible(showWatchOnly);      // show watch-only label
     ui->labelWatchAvailable->setVisible(showWatchOnly); // show watch-only available balance
     ui->labelWatchPending->setVisible(showWatchOnly);   // show watch-only pending balance
-    ui->labelWatchLocked->setVisible(showWatchOnly);     // show watch-only total balance
+    ui->labelWatchLocked->setVisible(showWatchOnly);    // show watch-only total balance
     ui->labelWatchTotal->setVisible(showWatchOnly);     // show watch-only total balance
 
     if (!showWatchOnly) {
@@ -413,7 +413,6 @@ void OverviewPage::newsReadyRead()
     if (statusCode >= 200 && statusCode < 300) {
         QByteArray data = currentReply->readAll();
         xml.addData(data);
-        parseXml();
     }
 }
 
@@ -421,6 +420,7 @@ void OverviewPage::newsFinished(QNetworkReply *reply)
 {
     Q_UNUSED(reply);
 
+    parseXml();
     ui->labelNewsStatus->setVisible(false);
 
     // Timer Activation for the news refresh
@@ -457,36 +457,41 @@ void OverviewPage::parseXml()
                     pubDateString.clear();
                     authorString.clear();
                     descriptionString.clear();
-                    linkString = xml.attributes().value("rss:about").toString();
                 }
             } else if (xml.isEndElement()) {
                 if (xml.name() == "item") {
-                    QDateTime qdt = QDateTime::fromString(pubDateString,Qt::RFC2822Date);
-
-                    bool found = false;
-
-                    for(int i = 0; i < ui->listNews->count(); ++i)
+                    if( !linkString.isEmpty() && !linkString.isNull()
+                     && !titleString.isEmpty() && !titleString.isNull()
+                     && !authorString.isEmpty() && !authorString.isNull()
+                     && !pubDateString.isEmpty() && !pubDateString.isNull())
                     {
-                        NewsItem * item = (NewsItem *)(ui->listNews->itemWidget(ui->listNews->item(i)));
-                        if( item->pubDate == qdt )
+                        bool found = false;
+
+                        QDateTime qdt = QDateTime::fromString(pubDateString,Qt::RFC2822Date);
+
+                        for(int i = 0; i < ui->listNews->count(); ++i)
                         {
-                            found = true;
-                            break;
+                            NewsItem * item = (NewsItem *)(ui->listNews->itemWidget(ui->listNews->item(i)));
+                            if( item->pubDate == qdt )
+                            {
+                                found = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if( !found )
-                    {
-                        NewsWidgetItem *widgetItem = new NewsWidgetItem(ui->listNews);
-                        widgetItem->setData(Qt::UserRole,qdt);
+                        if( !found )
+                        {
+                            NewsWidgetItem *widgetItem = new NewsWidgetItem(ui->listNews);
+                            widgetItem->setData(Qt::UserRole,qdt);
 
-                        ui->listNews->addItem(widgetItem);
+                            ui->listNews->addItem(widgetItem);
 
-                        NewsItem *newsItem = new NewsItem(this,qdt,linkString,titleString,authorString,descriptionString);
+                            NewsItem *newsItem = new NewsItem(this,qdt,linkString,titleString,authorString,descriptionString);
 
-                        widgetItem->setSizeHint( newsItem->sizeHint() );
+                            widgetItem->setSizeHint( newsItem->sizeHint() );
 
-                        ui->listNews->setItemWidget( widgetItem, newsItem );
+                            ui->listNews->setItemWidget( widgetItem, newsItem );
+                        }
                     }
 
                     titleString.clear();
@@ -497,7 +502,6 @@ void OverviewPage::parseXml()
 
                     insideItem = false;
                 }
-
             } else if (xml.isCharacters() && !xml.isWhitespace()) {
                 if (insideItem) {
                     if (currentTag == "title")
@@ -521,12 +525,12 @@ void OverviewPage::parseXml()
 
     catch(std::exception &e)
     {
-        qFatal("std:exception %s",e.what());
+        qWarning("std:exception %s",e.what());
     }
 
     catch(...)
     {
-        qFatal("generic exception");
+        qWarning("generic exception");
     }
 }
 
