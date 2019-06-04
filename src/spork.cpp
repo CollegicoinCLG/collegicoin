@@ -134,6 +134,7 @@ int64_t GetSporkValue(int nSporkID)
         if (nSporkID == SPORK_17_PROTOCOL_ENFORCEMENT_3)        r = SPORK_17_PROTOCOL_ENFORCEMENT_3_DEFAULT;
         if (nSporkID == SPORK_18_PROTOCOL_ENFORCEMENT_4)        r = SPORK_18_PROTOCOL_ENFORCEMENT_4_DEFAULT;
         if (nSporkID == SPORK_19_PROTOCOL_ENFORCEMENT_5)        r = SPORK_19_PROTOCOL_ENFORCEMENT_5_DEFAULT;
+        if (nSporkID == SPORK_20_ENABLE_BURN_FEATURE)           r = SPORK_20_ENABLE_BURN_FEATURE_DEFAULT;
 
         if (r == -1) LogPrintf("GetSpork::Unknown Spork %d\n", nSporkID);
     }
@@ -279,6 +280,7 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     if (strName == "SPORK_17_PROTOCOL_ENFORCEMENT_3")        return SPORK_17_PROTOCOL_ENFORCEMENT_3;
     if (strName == "SPORK_18_PROTOCOL_ENFORCEMENT_4")        return SPORK_18_PROTOCOL_ENFORCEMENT_4;
     if (strName == "SPORK_19_PROTOCOL_ENFORCEMENT_5")        return SPORK_19_PROTOCOL_ENFORCEMENT_5;
+    if (strName == "SPORK_20_ENABLE_BURN_FEATURE")           return SPORK_20_ENABLE_BURN_FEATURE;
 
     return -1;
 }
@@ -301,6 +303,7 @@ std::string CSporkManager::GetSporkNameByID(int id)
     if (id == SPORK_17_PROTOCOL_ENFORCEMENT_3)        return "SPORK_17_PROTOCOL_ENFORCEMENT_3";
     if (id == SPORK_18_PROTOCOL_ENFORCEMENT_4)        return "SPORK_18_PROTOCOL_ENFORCEMENT_4";
     if (id == SPORK_19_PROTOCOL_ENFORCEMENT_5)        return "SPORK_19_PROTOCOL_ENFORCEMENT_5";
+    if (id == SPORK_20_ENABLE_BURN_FEATURE)           return "SPORK_20_ENABLE_BURN_FEATURE";
 
     return "Unknown";
 }
