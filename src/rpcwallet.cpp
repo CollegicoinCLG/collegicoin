@@ -110,7 +110,6 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
     return CBitcoinAddress(keyID).ToString();
 }
 
-
 CBitcoinAddress GetAccountAddress(string strAccount, bool bForceNew = false)
 {
     CWalletDB walletdb(pwalletMain->strWalletFile);
@@ -168,7 +167,6 @@ UniValue getaccountaddress(const UniValue& params, bool fHelp)
     return ret;
 }
 
-
 UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
@@ -195,7 +193,6 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
 
     return CBitcoinAddress(keyID).ToString();
 }
-
 
 UniValue setaccount(const UniValue& params, bool fHelp)
 {
@@ -233,7 +230,6 @@ UniValue setaccount(const UniValue& params, bool fHelp)
     return NullUniValue;
 }
 
-
 UniValue getaccount(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
@@ -257,7 +253,6 @@ UniValue getaccount(const UniValue& params, bool fHelp)
         strAccount = (*mi).second.name;
     return strAccount;
 }
-
 
 UniValue getaddressesbyaccount(const UniValue& params, bool fHelp)
 {
@@ -318,6 +313,75 @@ void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew,
     }
     if (!pwalletMain->CommitTransaction(wtxNew, reservekey, (!fUseIX ? "tx" : "ix")))
         throw JSONRPCError(RPC_WALLET_ERROR, "Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
+}
+
+void SendMoneySC(const CScript scriptPubKeyIn, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false)
+{
+    // Check amount
+    if (nValue <= 0)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid amount");
+
+    if (nValue > pwalletMain->GetBalance())
+        throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, "Insufficient funds");
+
+    string strError;
+    if (pwalletMain->IsLocked()) {
+        strError = "Error: Wallet locked, unable to create transaction!";
+        LogPrintf("SendMoneySC() : %s", strError);
+        throw JSONRPCError(RPC_WALLET_ERROR, strError);
+    }
+
+    // get ScriptPubKey
+    CScript scriptPubKey = scriptPubKeyIn;
+
+    // Create and send the transaction
+    CReserveKey reservekey(pwalletMain);
+    CAmount nFeeRequired;
+    if (!pwalletMain->CreateTransaction(scriptPubKey, nValue, wtxNew, reservekey, nFeeRequired, strError, NULL, ALL_COINS, fUseIX, (CAmount)0)) {
+        if (nValue + nFeeRequired > pwalletMain->GetBalance())
+            strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!", FormatMoney(nFeeRequired));
+        LogPrintf("SendMoneySC() : %s\n", strError);
+        throw JSONRPCError(RPC_WALLET_ERROR, strError);
+    }
+
+    if (!pwalletMain->CommitTransaction(wtxNew, reservekey, (!fUseIX ? "tx" : "ix")))
+        throw JSONRPCError(RPC_WALLET_ERROR, "Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
+}
+
+UniValue burn(const UniValue& params, bool fHelp)
+{
+    if (!IsSporkActive(SPORK_20_ENABLE_BURN_FEATURE))
+        throw runtime_error("Burn feature not enable");
+
+    if (fHelp || params.size() < 1 || params.size() > 2)
+        throw runtime_error(
+            "burn <amount> [hex string]\n"
+            "This command is used to Burn DOGEC Coins \n"
+            "<amount> is a real and is rounded to the nearest 0.00000001"
+            + HelpRequiringPassphrase());
+
+    CScript scriptPubKey;
+
+    if (params.size() > 1) {
+        vector<unsigned char> data;
+        if (params[1].get_str().size() > 0){
+            data = ParseHexV(params[1], "data");
+        } else {
+            // Empty data is valid
+        }
+        scriptPubKey = CScript() << OP_RETURN << data;
+    } else {
+        scriptPubKey = CScript() << OP_RETURN;
+    }
+
+    // Amount
+    int64_t nAmount = AmountFromValue(params[0]);
+    CTxDestination address1;
+    CWalletTx wtx;
+    SendMoneySC(scriptPubKey, nAmount, wtx,false);
+
+    EnsureWalletIsUnlocked();
+    return wtx.GetHash().GetHex();
 }
 
 UniValue sendtoaddress(const UniValue& params, bool fHelp)
@@ -585,7 +649,6 @@ UniValue getreceivedbyaccount(const UniValue& params, bool fHelp)
     return (double)nAmount / (double)COIN;
 }
 
-
 CAmount GetAccountBalance(CWalletDB& walletdb, const string& strAccount, int nMinDepth, const isminefilter& filter)
 {
     CAmount nBalance = 0;
@@ -615,7 +678,6 @@ CAmount GetAccountBalance(const string& strAccount, int nMinDepth, const isminef
     CWalletDB walletdb(pwalletMain->strWalletFile);
     return GetAccountBalance(walletdb, strAccount, nMinDepth, filter);
 }
-
 
 UniValue getbalance(const UniValue& params, bool fHelp)
 {
@@ -693,7 +755,6 @@ UniValue getunconfirmedbalance(const UniValue &params, bool fHelp)
     return ValueFromAmount(pwalletMain->GetUnconfirmedBalance());
 }
 
-
 UniValue movecmd(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 3 || params.size() > 5)
@@ -755,7 +816,6 @@ UniValue movecmd(const UniValue& params, bool fHelp)
     return true;
 }
 
-
 UniValue sendfrom(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 3 || params.size() > 6)
@@ -809,7 +869,6 @@ UniValue sendfrom(const UniValue& params, bool fHelp)
 
     return wtx.GetHash().GetHex();
 }
-
 
 UniValue sendmany(const UniValue& params, bool fHelp)
 {
@@ -930,7 +989,6 @@ UniValue addmultisigaddress(const UniValue& params, bool fHelp)
     pwalletMain->SetAddressBook(innerID, strAccount, "send");
     return CBitcoinAddress(innerID).ToString();
 }
-
 
 struct tallyitem {
     CAmount nAmount;
@@ -1543,7 +1601,6 @@ UniValue gettransaction(const UniValue& params, bool fHelp)
     return entry;
 }
 
-
 UniValue backupwallet(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
@@ -1561,7 +1618,6 @@ UniValue backupwallet(const UniValue& params, bool fHelp)
 
     return NullUniValue;
 }
-
 
 UniValue keypoolrefill(const UniValue& params, bool fHelp)
 {
@@ -1591,7 +1647,6 @@ UniValue keypoolrefill(const UniValue& params, bool fHelp)
 
     return NullUniValue;
 }
-
 
 static void LockWallet(CWallet* pWallet)
 {
@@ -1652,7 +1707,6 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
     return NullUniValue;
 }
 
-
 UniValue walletpassphrasechange(const UniValue& params, bool fHelp)
 {
     if (pwalletMain->IsCrypted() && (fHelp || params.size() != 2))
@@ -1691,7 +1745,6 @@ UniValue walletpassphrasechange(const UniValue& params, bool fHelp)
     return NullUniValue;
 }
 
-
 UniValue walletlock(const UniValue& params, bool fHelp)
 {
     if (pwalletMain->IsCrypted() && (fHelp || params.size() != 0))
@@ -1720,7 +1773,6 @@ UniValue walletlock(const UniValue& params, bool fHelp)
 
     return NullUniValue;
 }
-
 
 UniValue encryptwallet(const UniValue& params, bool fHelp)
 {
