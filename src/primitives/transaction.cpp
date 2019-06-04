@@ -146,6 +146,17 @@ CAmount CTransaction::GetValueOut() const
     return nValueOut;
 }
 
+CAmount CTransaction::GetValueOutUnspendable() const
+{
+    CAmount nValueOut = 0;
+    for (std::vector<CTxOut>::const_iterator it(vout.begin()); it != vout.end(); ++it)
+    {
+        if( !it->IsNull() && !it->IsEmpty() && it->scriptPubKey.IsUnspendable() )
+            nValueOut += it->nValue;
+    }
+    return nValueOut;
+}
+
 double CTransaction::ComputePriority(double dPriorityInputs, unsigned int nTxSize) const
 {
     nTxSize = CalculateModifiedSize(nTxSize);
