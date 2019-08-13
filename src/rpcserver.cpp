@@ -345,7 +345,7 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "reconsiderblock", &reconsiderblock, true, true, false},
         {"hidden", "setmocktime", &setmocktime, true, false, false},
         {"hidden", "makekeypair", &makekeypair, true, true, false},
-		
+
         /* Collegicoin features */
         {"collegicoin", "masternode", &masternode, true, true, false},
         {"collegicoin", "listmasternodes", &listmasternodes, true, true, false},
@@ -787,7 +787,6 @@ void StopRPCThreads()
     }
     deadlineTimers.clear();
     deadlineTimersNew.clear();
-	
 
     DeleteAuthCookie();
 
